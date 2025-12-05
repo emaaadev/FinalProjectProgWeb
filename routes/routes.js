@@ -26,14 +26,14 @@ var upload = multer({
 // get
 router.get('/', async (req, res)=>{
 
-       try{
+    try{
         const articles = await Article.find({})
-         res.render('index', {titulo: 'Inicio', articles: articles})
+        res.render('index', {titulo: 'Inicio', articles: articles})
 
-       }
-       catch(error){
+    }
+    catch(error){
         res.json({message: error})
-       }
+    }
 })
 
 
@@ -44,12 +44,12 @@ router.get('/add', (req, res) => {
 // create
 router.post('/add' ,upload, () => {
     const article = new Article({
-           code: req.body.code,
-           name: req.body.name,
-           image: req.file.filename,
-           description: req.body.description,
-           stock: req.body.stock,
-           price: req.body.price,
+        code: req.body.code,
+        name: req.body.name,
+        image: req.file.filename,
+        description: req.body.description,
+        stock: req.body.stock,
+        price: req.body.price,
     })
     article.save().then(()=>{
         req.session.message = {
@@ -58,10 +58,10 @@ router.post('/add' ,upload, () => {
         }
         res.redirect('/')
     }).catch((error) => {
-       res.json({
-          message: error.message,
-          type: 'danger'
-       })
+    res.json({
+        message: error.message,
+        type: 'danger'
+    })
     })
 
 })
@@ -100,9 +100,9 @@ router.post('/update:id', upload, async (req, res) =>{
         try{
             fs.unlinkSync('./upload/' + req.body.old_image)
         }catch(error){
-              res.json({
-          message: error.message,
-          type: 'danger'
+            res.json({
+        message: error.message,
+        type: 'danger'
     })
         }
         
@@ -114,13 +114,13 @@ router.post('/update:id', upload, async (req, res) =>{
     try{
         await Article.findByIdAndUpdate(id,{
 
-           code: req.body.code,
-           name: req.body.name,
-           image: new_image,
-           description: req.body.description,
-           stock: req.body.stock,
-           price: req.body.price,
-          
+        code: req.body.code,
+        name: req.body.name,
+        image: new_image,
+        description: req.body.description,
+        stock: req.body.stock,
+        price: req.body.price,
+        
         })  
 
         req.session.message = {
@@ -132,8 +132,8 @@ router.post('/update:id', upload, async (req, res) =>{
 
     } catch(error){
         res.json({
-          message: error.message,
-          type: 'danger'
+        message: error.message,
+        type: 'danger'
     })
     }
 })
@@ -152,20 +152,20 @@ router.get('/delete/:id' ,async (req, res) => {
                 fs.unlinkSync('./upload/' + resourceLimits.image )
             }catch(error){
                 console.log(error)
-              }   
+            }   
         }
-       
+    
         req.session.message = {
             message: 'Usuario eliminado correctamente!',
             type: 'success'
         }
     
-             res.redirect('/')
+            res.redirect('/')
 
     }catch(error){
         res.json({
-          message: error.message,
-          type: 'danger'})
+        message: error.message,
+        type: 'danger'})
     }
 })
 
