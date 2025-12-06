@@ -17,7 +17,8 @@ var storage = multer.diskStorage({
     }
 })
 
-var upload = multer({
+var upload = multer(
+    {
     storage: storage
 }).single('image')
 
@@ -42,28 +43,30 @@ router.get('/add', (req, res) => {
 })
 
 // create
-router.post('/add' ,upload, () => {
-    const article = new Article({
-        code: req.body.code,
-        name: req.body.name,
-        image: req.file.filename,
-        description: req.body.description,
-        stock: req.body.stock,
-        price: req.body.price,
-    })
-    article.save().then(()=>{
+router.post('/add', upload, async (req, res) => {
+    try {
+        const article = new Article({
+            code: req.body.code,
+            name: req.body.name,
+            image: req.file ? req.file.filename : '',
+            description: req.body.description,
+            stock: req.body.stock,
+            price: req.body.price,
+        })
+        
+        await article.save()
+        
         req.session.message = {
             message: 'Articulo agregado correctamente!',
             type: 'success'
         }
         res.redirect('/')
-    }).catch((error) => {
-    res.json({
-        message: error.message,
-        type: 'danger'
-    })
-    })
-
+    } catch (error) {
+        res.json({
+            message: error.message,
+            type: 'danger'
+        })
+    }
 })
 
 // update
@@ -90,7 +93,7 @@ router.get('/edit/:id', async (req, res) => {
 })
 
 
-router.post('/update:id', upload, async (req, res) =>{
+router.post('/update/:id', upload, async (req, res) =>{
     const id = req.params.id
     let new_image =''
 
@@ -147,16 +150,16 @@ router.get('/delete/:id' ,async (req, res) => {
     try{
         const article = await Article.findByIdAndDelete(id)
 
-        if(user != null && user.image != ''){
+        if(article != null && article.image != ''){
             try{
-                fs.unlinkSync('./upload/' + resourceLimits.image )
+                fs.unlinkSync('./upload/' + article.image )
             }catch(error){
                 console.log(error)
             }   
         }
     
         req.session.message = {
-            message: 'Usuario eliminado correctamente!',
+            message: 'Articulo eliminado correctamente!',
             type: 'success'
         }
     
