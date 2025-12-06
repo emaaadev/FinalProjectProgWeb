@@ -1,0 +1,77 @@
+<%- include('layout/header') %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(90deg, #0f3460 0%, #533483 100%); color: white;">
+                    <h4 class="mb-0"><i class="bi bi-list-ul me-2"></i>Lista de Artículos</h4>
+                    <a href="/add" class="btn btn-light btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i>Nuevo Artículo
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped text-center align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Imagen</th>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Stock</th>
+                                    <th>Precio</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if(articles && articles.length > 0) { %>
+                                    <% articles.forEach((article, index) => { %>
+                                        <tr>
+                                            <td><%= index + 1 %></td>
+                                            <td>
+                                                <% if(article.image) { %>
+                                                    <img src="/uploads/<%= article.image %>" alt="<%= article.name %>" width="50" class="img-thumbnail rounded">
+                                                <% } else { %>
+                                                    <span class="badge bg-secondary">Sin imagen</span>
+                                                <% } %>
+                                            </td>
+                                            <td><%= article.code %></td>
+                                            <td><%= article.name %></td>
+                                            <td><%= article.description || 'N/A' %></td>
+                                            <td>
+                                                <span class="badge <%= article.stock > 10 ? 'bg-success' : (article.stock > 0 ? 'bg-warning' : 'bg-danger') %>">
+                                                    <%= article.stock %>
+                                                </span>
+                                            </td>
+                                            <td>$<%= article.price.toFixed(2) %></td>
+                                            <td>
+                                                <a href="/edit/<%= article._id %>" class="btn btn-warning btn-sm" title="Editar">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                <a href="/delete/<%= article._id %>" class="btn btn-danger btn-sm" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar este artículo?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4">
+                                            <i class="bi bi-inbox display-4 text-muted"></i>
+                                            <p class="text-muted mt-2">No hay artículos registrados</p>
+                                            <a href="/add" class="btn btn-primary">Agregar primer artículo</a>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('layout/footer') %>

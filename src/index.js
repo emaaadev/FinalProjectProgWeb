@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const session = require('express-session')
+const path = require('path')
 const router = require('../routes/routes')
 
 const app = express()
@@ -30,8 +31,12 @@ app.use((req, res, next)=>{
     next()
 })
 
+//acceso a las imagenes
+app.use('/uploads', express.static(path.join(__dirname, '../upload')))
+
 // configurar motor de plantillas
 app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, '../views'))
 app.use('', router)
 
 
